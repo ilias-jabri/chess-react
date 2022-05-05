@@ -56,7 +56,7 @@
   width : 100%;
 }
 .board-square:hover{
-  background-color: greenyellow;
+  background-color: rgb(149, 162, 128);
   cursor: pointer;
 }
 .black {
