@@ -54,7 +54,7 @@ export class Board extends react.Component {
     setSquares(){
         const squares = [];
         const position = setPosition(this.state.position);
-
+        let thePiece = "white-queen"
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -62,11 +62,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {"white-knight"} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {"white-knight"} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                 }
@@ -74,11 +74,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {"white-knight"} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {"white-knight"} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -101,19 +101,15 @@ class BoardSquare extends react.Component {
         super (props)
         this.state = {
             color: "black",
-            piece: "white-knight"
+            piece: "white-pown"
         }
+        this.state.color = this.props.color;
     }
     render(){
-        this.state.color = this.props.color;
-        let content = 1;
-        if(this.props.piece !== undefined){
-            console.log(this.props.piece)
-            content = <img src = {`../public/chess-pieces/black-bishop.png`} alt = '' /> 
-        }
         return (
             <div id = {`${this.props.id}`} className = {`board-square ${this.state.color}`}>
-                {content}
+                <img src = {require(`./chess-pieces/${this.props.piece || this.state.piece}.png`)} alt = '' /> 
+                {console.log(this.props.piece)}
             </div>
         )
     }

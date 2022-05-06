@@ -44,9 +44,10 @@
   border: 1px solid black;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
   width: 80%;
-  max-width: 400px;
-  aspect-ratio: 1/1;
+  width: 400px;
+  height: 400px;
 }
 .board-square{
   transition : 200ms;
@@ -54,6 +55,9 @@
   background-color: rgb(0, 0, 0);
   height: 100%;
   width : 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .board-square:hover{
   background-color: rgb(149, 162, 128);
@@ -67,4 +71,9 @@
 }
 .red {
   background-color: red;
+}
+.board-square > img{
+  height: auto;
+  width: 75%;
+  aspect-ratio: 1/1;
 }
