@@ -65,3 +65,7 @@
 .white{
   background-color: rgb(197, 179, 159);
 }
+.red {
+  background-color: red;
+  border: 1px solid white;
+}

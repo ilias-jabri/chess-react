@@ -1,12 +1,23 @@
 import react from "react"
-import reactDOM from "react-dom"
 
 
+let positionToArray = (pos) => {
+    let position = pos || 'Rwa1/Nwcb1/Bwc1/Qwd1/Kwe1/Bwf1/Nwg1/Rwh1/Pwa2/Pwb2/Pwc2/Pwd2/Pwe2/Pwf2/Pwg2/Pwh2/';
+        position = position.match(/\w+\d(?=\/)/g);
+        position.forEach((pos, index) => {
+            const arr = [pos.match(/\D{2}/g)[0], pos.match(/\w\d/g)[0]];
+            return arr;
+        })
+        return position;
+}
+console.log(
+positionToArray("Rwa1/Nwcb1/")
+)
 export class Board extends react.Component {
     constructor (props){
         super(props);
         this.state = {
-            position: this.props.position || 'Rwa1/Kwc1/Bwc1/Qwd1/Kwe1/Bwf1/Kwg1/Rwh1/Pwa2/Pwc2/Pwc2/Pwd2/Pwe2/Pwf2/Pwg2/Pwh2/',
+            position: positionToArray(),
             lastMove: null,
             playerToPlay: 'white',
             selectedPiece: null
@@ -18,7 +29,7 @@ export class Board extends react.Component {
     mapPosition = () => {
         const files = ['a','b','c','d','e','f','g','h'];
         
-            let doWork = (file, initialPosition) => {   
+            let doWork = (file, initialPosition) => {
                 this.positionNumToSquare.set(initialPosition, file+1);
                 for (let i = 2; i <= 8; i++) {
                     let pos = file+i;
@@ -32,15 +43,18 @@ export class Board extends react.Component {
             for( const [key, value] of this.positionNumToSquare.entries()){
                 this.positionSquareToNum.set(value,key);
             }
-            console.log(this.positionSquareToNum);
-     
     }
     setPosition = (val) => {
-        const position = val || this.state.position;
-        
+        let position = val || this.state.position;
+        position.forEach((pos, index) => {
+            position[index] = this.positionSquareToNum.get(position[index][1]);
+        })
+        return position;
     }
+    
     setSquares(){
         const squares = [];
+        const position = this.setPosition();
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -48,11 +62,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = "white" />);
+                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = "black" />);
+                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                 }
@@ -60,11 +74,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = "black" />);
+                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = "white" />);
+                        squares.push(<BoardSquare id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -75,6 +89,7 @@ export class Board extends react.Component {
         return squares;
     }
     render(){
+        this.setPosition();
         return (
             <div className="chess-board">
                 {this.setSquares()}
