@@ -6,12 +6,13 @@ let positionToArray = (pos) => {
         position = position.match(/\w+\d(?=\/)/g);
         position.forEach((pos, index) => {
             const arr = [pos.match(/\D{2}/g)[0], pos.match(/\w\d/g)[0]];
+            position[index] = arr;
             return arr;
         })
         return position;
 }
 console.log(
-positionToArray("Rwa1/Nwcb1/")
+positionToArray()
 )
 export class Board extends react.Component {
     constructor (props){
@@ -32,7 +33,7 @@ export class Board extends react.Component {
             let doWork = (file, initialPosition) => {
                 this.positionNumToSquare.set(initialPosition, file+1);
                 for (let i = 2; i <= 8; i++) {
-                    let pos = file+i;
+                    let pos = file + i;
                     initialPosition += 8;
                     this.positionNumToSquare.set(initialPosition, pos);
                 }
@@ -45,8 +46,10 @@ export class Board extends react.Component {
             }
     }
     setPosition = (val) => {
-        let position = val || this.state.position;
+        let position = this.state.position;
+        console.log(position);
         position.forEach((pos, index) => {
+            console.log(pos, 'i');
             position[index] = this.positionSquareToNum.get(position[index][1]);
         })
         return position;
