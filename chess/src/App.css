@@ -47,6 +47,7 @@
   grid-template-rows: repeat(8, 1fr);
   width: 400px;
   height: 400px;
+  background: linear-gradient(-45deg, rgb(171, 183, 159), rgb(252, 255, 239));
 }
 .board-square{
   transition : 200ms;
@@ -69,6 +70,7 @@
 }
 .white{
   background-color: rgb(202, 230, 209);
+  background-color: transparent;
 }
 .red {
   border: 1px solid white;

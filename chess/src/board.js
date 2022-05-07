@@ -67,6 +67,7 @@ export class Board extends react.Component {
     setSquares(){
         const squares = [];
         const position = new Map (setPosition(this.state.position));
+        const styles = { backgroundColor: "white", }
         console.log(this.state.highlightedMoves)
         let coloredSquares = this.state.highlightedMoves;
         let switcher = false;
