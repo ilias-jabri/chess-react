@@ -28,16 +28,25 @@ export class Board extends react.Component {
             position: positionToArray(this.props.position),
             lastMove: null,
             playerToPlay: 'white',
-            selectedPiece: null
+            selectedPiece: null,
+            highlightedMoves: []
         }
         this.mapPosition();
+        this.highlightPossibleMoves = this.highlightPossibleMoves.bind(this);
     }
-    highlightPossitbleMoves = (piece, arr) =>{
-
+    highlightPossibleMoves(move){
+        this.setState(pState => {
+            return {
+                position: pState.position,
+                lastMove: pState.lastMove,
+                playerToPlay: pState.playerToPlay,
+                selectedPiece: pState.selectedPiece,
+                highlightedMoves: move
+            }   
+        })
     }
     mapPosition = () => {
         const files = ['a','b','c','d','e','f','g','h'];
-        
             let doWork = (file, initialPosition) => {
                 positionNumToSquare.set(initialPosition, file+1);
                 for (let i = 2; i <= 8; i++) {
@@ -46,17 +55,20 @@ export class Board extends react.Component {
                     positionNumToSquare.set(initialPosition, pos);
                 }
             }
-            files.forEach((file, i)=>{
+            files.forEach((file, i) => {
                 doWork(file, i+1);
             })
             for( const [key, value] of positionNumToSquare.entries()){
                 positionSquareToNum.set(value,key);
             }
     }
+    componentDidUpdate(){
+    }
     setSquares(){
         const squares = [];
         const position = new Map (setPosition(this.state.position));
-        let coloredSquares = [1,64];
+        console.log(this.state.highlightedMoves)
+        let coloredSquares = this.state.highlightedMoves;
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -64,11 +76,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                 }
@@ -76,11 +88,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -92,9 +104,12 @@ export class Board extends react.Component {
     }
     render(){
         return (
+            <>
+            <h1>{this.state.highlightedMoves}</h1>
             <div className="chess-board">
                 {this.setSquares()}
             </div>
+            </>
         )
     }
 }
@@ -144,18 +159,19 @@ class BoardSquare extends react.Component {
         if(this.props.piece) this.state.piece = translatePieces(this.props.piece);
     }
     clickHandler = () => {
-
+        
     }
     render(){
         let content = '';
         let thePiece;
+        let pos = positionNumToSquare.get(this.props.id);
 
         if (this.props.piece) {
             thePiece = translatePieces(this.props.piece);
             content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = '' />
         }
         return (
-            <div onClick = {this.clickHandler} 
+            <div onClick = {()=>{this.props.highlightHandle(pos)}} 
                 id = {`${this.props.id}`} 
                 className = {`board-square ${this.state.color}`}>
                     {content} 
