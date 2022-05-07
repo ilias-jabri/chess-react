@@ -58,8 +58,11 @@
   align-items: center;
 }
 .board-square:hover{
-  background-color: rgb(149, 162, 128);
+  border: 1px solid black;
   cursor: pointer;
+}
+.board-square:focus {
+  background-color: gold;
 }
 .black {
   background-color: rgb(96, 141, 105);
@@ -69,6 +72,7 @@
 }
 .red {
   border: 1px solid white;
+  background-color: tomato;
 }
 .board-square > img{
   height: 35px;

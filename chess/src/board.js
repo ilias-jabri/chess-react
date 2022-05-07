@@ -32,6 +32,9 @@ export class Board extends react.Component {
         }
         this.mapPosition();
     }
+    highlightPossitbleMoves = (piece, arr) =>{
+
+    }
     mapPosition = () => {
         const files = ['a','b','c','d','e','f','g','h'];
         
@@ -53,7 +56,7 @@ export class Board extends react.Component {
     setSquares(){
         const squares = [];
         const position = new Map (setPosition(this.state.position));
-        let thePiece = "white-pown"
+        let coloredSquares = [1,64];
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -61,11 +64,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"white"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"black"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                 }
@@ -73,11 +76,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"black"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"white"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -135,9 +138,13 @@ class BoardSquare extends react.Component {
         super (props)
         this.state = {
             color: "black",
-            piece: "white-pown"
+            piece: null
         }
-        this.state.color = this.props.color;
+        this.state.color = this.props.color ?? this.state.color;
+        if(this.props.piece) this.state.piece = translatePieces(this.props.piece);
+    }
+    clickHandler = () => {
+
     }
     render(){
         let content = '';
@@ -148,8 +155,10 @@ class BoardSquare extends react.Component {
             content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = '' />
         }
         return (
-            <div id = {`${this.props.id}`} className = {`board-square ${this.state.color}`}>
-                {content} 
+            <div onClick = {this.clickHandler} 
+                id = {`${this.props.id}`} 
+                className = {`board-square ${this.state.color}`}>
+                    {content} 
             </div>
         )
     }
