@@ -45,13 +45,11 @@
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  width: 80%;
   width: 400px;
   height: 400px;
 }
 .board-square{
   transition : 200ms;
-  opacity: 1;
   background-color: rgb(0, 0, 0);
   height: 100%;
   width : 100%;
@@ -64,16 +62,14 @@
   cursor: pointer;
 }
 .black {
-  background-color: rgb(78, 54, 35);
+  background-color: rgb(96, 141, 105);
 }
 .white{
-  background-color: rgb(197, 179, 159);
+  background-color: rgb(202, 230, 209);
 }
 .red {
-  background-color: red;
+  border: 1px solid white;
 }
 .board-square > img{
-  height: auto;
-  width: 75%;
-  aspect-ratio: 1/1;
+  height: 35px;
 }

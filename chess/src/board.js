@@ -1,10 +1,9 @@
 import react from "react"
-const testPosition = "Rwa1/"
 const positionNumToSquare = new Map();
 const positionSquareToNum = new Map();
 
 let positionToArray = (pos) => {
-    let position = pos || 'Rwa1/Nwcb1/Bwc1/Qwd1/Kwe1/Bwf1/Nwg1/Rwh1/Pwa2/Pwb2/Pwc2/Pwd2/Pwe2/Pwf2/Pwg2/Pwh2/';
+    let position = pos || 'Rwa1/Nwcb1/Bwc1/Qwd1/Kwe1/Bwf1/Nwg1/Rwh1/Pwa2/Pwb2/Pwc2/Pwd2/Pwe2/Pwf2/Pwg2/Pwh2';
     const generatedArray = [];
         position = position.match(/\w+\d(?=\/)/g);
         position.forEach((pos, index) => {
@@ -16,7 +15,7 @@ let positionToArray = (pos) => {
 let setPosition = (position) => {
     const generatedArray = [];
     position.forEach((pos, index) => {
-        generatedArray[index] = positionSquareToNum.get(position[index][1]);
+        generatedArray[index] = [positionSquareToNum.get(pos[1]), pos[0]];
     })
     return generatedArray;
 }
@@ -53,8 +52,8 @@ export class Board extends react.Component {
     }
     setSquares(){
         const squares = [];
-        const position = setPosition(this.state.position);
-        let thePiece = "white-queen"
+        const position = new Map (setPosition(this.state.position));
+        let thePiece = "white-pown"
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -62,11 +61,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"white"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"black"} />);
                         squaresCounter++;
                     }
                 }
@@ -74,11 +73,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare piece = {`${thePiece}`} id = {squaresCounter} key = {squaresCounter} color = {position.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {"white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -96,6 +95,41 @@ export class Board extends react.Component {
         )
     }
 }
+function translatePieces(acro){
+    let color = 'none',type = 'none';
+    // eslint-disable-next-line default-case
+    switch(acro[0]){
+        case 'K':
+            type = "king";
+            break;
+        case 'N':
+            type = "knight";
+            break;
+        case 'Q':
+            type = "queen";
+            break;
+        case 'P':
+            type = "pown";
+            break;
+        case 'B':
+            type = "bishop";
+            break;
+        case 'R':
+            type = "rook";
+            break
+    }
+    // eslint-disable-next-line default-case
+    switch(acro[1]){
+        case 'w':
+            color = "white";
+            break;
+        case 'b':
+            color = "black";
+        break
+    }
+
+    return `${color}-${type}`;
+}
 class BoardSquare extends react.Component {
     constructor (props) {
         super (props)
@@ -106,10 +140,16 @@ class BoardSquare extends react.Component {
         this.state.color = this.props.color;
     }
     render(){
+        let content = '';
+        let thePiece;
+
+        if (this.props.piece) {
+            thePiece = translatePieces(this.props.piece);
+            content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = '' />
+        }
         return (
             <div id = {`${this.props.id}`} className = {`board-square ${this.state.color}`}>
-                <img src = {require(`./chess-pieces/${this.props.piece || this.state.piece}.png`)} alt = '' /> 
-                {console.log(this.props.piece)}
+                {content} 
             </div>
         )
     }
