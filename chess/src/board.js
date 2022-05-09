@@ -21,6 +21,7 @@ let setPosition = (position) => {
 }
 
 export class Board extends react.Component {
+    static count = 0;
     constructor (props){
         super(props);
         this.state = {
@@ -68,6 +69,8 @@ export class Board extends react.Component {
         const position = new Map (setPosition(this.state.position));
         console.log(this.state.highlightedMoves)
         let coloredSquares = this.state.highlightedMoves;
+        console.log("colored squares: " , coloredSquares)
+        console.log(coloredSquares.includes(5));
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -75,7 +78,7 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} highlighted = {coloredSquares.includes(squaresCounter)} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;
                     }
                     else {
@@ -99,7 +102,15 @@ export class Board extends react.Component {
             squaresCounter -= 8;
             switcher === true ? switcher = false: switcher = true;
         }
+        Board.setCount();
+        console.log(Board.count);
         return squares;
+    }
+    static setCount (){
+        Board.count++;
+    }
+    get getCount(){
+        return this.count;
     }
     render(){
         return (
@@ -152,27 +163,30 @@ class BoardSquare extends react.Component {
         super (props)
         this.state = {
             color: "black",
+            position: positionNumToSquare.get(this.props.id),
             piece: null
         }
         this.state.color = this.props.color ?? this.state.color;
         if(this.props.piece) this.state.piece = translatePieces(this.props.piece);
     }
     clickHandler = () => {
-        
+        this.props.highlightHandle(this.position);
     }
     render(){
         let content = '';
         let thePiece;
         let pos = positionNumToSquare.get(this.props.id);
+        let rendredColor = this.state.color;
+        this.props.highlighted ? rendredColor = "red": rendredColor = this.state.color;
 
         if (this.props.piece) {
             thePiece = translatePieces(this.props.piece);
-            content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = '' />
+            content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = 'chess-piece' />
         }
         return (
-            <div onClick = {()=>{this.props.highlightHandle(pos)}} 
+            <div onClick = {()=>{this.props.highlightHandle([this.props.id])}} 
                 id = {`${this.props.id}`} 
-                className = {`board-square ${this.state.color}`}>
+                className = {`board-square ${rendredColor}`}>
                     {content} 
             </div>
         )
