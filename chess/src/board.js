@@ -20,7 +20,6 @@ let setPosition = (position) => {
     return generatedArray;
 }
 
-
 export class Board extends react.Component {
     constructor (props){
         super(props);
@@ -67,7 +66,6 @@ export class Board extends react.Component {
     setSquares(){
         const squares = [];
         const position = new Map (setPosition(this.state.position));
-        const styles = { backgroundColor: "white", }
         console.log(this.state.highlightedMoves)
         let coloredSquares = this.state.highlightedMoves;
         let switcher = false;
@@ -106,7 +104,7 @@ export class Board extends react.Component {
     render(){
         return (
             <>
-            <h1>{this.state.highlightedMoves}</h1>
+            <h1> the square is: {this.state.highlightedMoves}</h1>
             <div className="chess-board">
                 {this.setSquares()}
             </div>
