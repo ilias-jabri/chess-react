@@ -67,7 +67,6 @@ export class Board extends react.Component {
     setSquares(){
         const squares = [];
         const position = new Map (setPosition(this.state.position));
-        console.log(this.state.highlightedMoves)
         let coloredSquares = this.state.highlightedMoves;
         console.log("colored squares: " , coloredSquares)
         console.log(coloredSquares.includes(5));
@@ -82,7 +81,7 @@ export class Board extends react.Component {
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} highlighted = {coloredSquares.includes(squaresCounter)} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                 }
@@ -90,11 +89,11 @@ export class Board extends react.Component {
                 squaresCounter -= 8;
                 for(let i = 1; i<=8; i++){
                     if (i % 2 === 0) {
-                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} highlighted = {coloredSquares.includes(squaresCounter)} color = {coloredSquares.includes(squaresCounter) ? "red" : "black"} />);
                         squaresCounter++;
                     }
                     else {
-                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
+                        squares.push(<BoardSquare highlightHandle = {this.highlightPossibleMoves} piece = {position.has(squaresCounter) ? position.get(squaresCounter): false} id = {squaresCounter} key = {squaresCounter} highlighted = {coloredSquares.includes(squaresCounter)} color = {coloredSquares.includes(squaresCounter) ? "red" : "white"} />);
                         squaresCounter++;    
                     }
                 }
@@ -103,7 +102,7 @@ export class Board extends react.Component {
             switcher === true ? switcher = false: switcher = true;
         }
         Board.setCount();
-        console.log(Board.count);
+        console.log("rendred times", Board.count);
         return squares;
     }
     static setCount (){
@@ -115,7 +114,7 @@ export class Board extends react.Component {
     render(){
         return (
             <>
-            <h1> the square is: {this.state.highlightedMoves}</h1>
+            <h1> the square is: {this.state.highlightedMoves[0]}</h1>
             <div className="chess-board">
                 {this.setSquares()}
             </div>
@@ -170,12 +169,83 @@ class BoardSquare extends react.Component {
         if(this.props.piece) this.state.piece = translatePieces(this.props.piece);
     }
     clickHandler = () => {
-        this.props.highlightHandle(this.position);
+        const highlighted = [];
+
+        let makeNumRed = (num, isDecrement = false) => {
+            if(isDecrement){
+                highlighted.push(num-1);    
+                return;
+            }
+            highlighted.push(num)
+        }
+        let isEndFile = (posInNum) => {
+            const aFileSquares = [1,9,17,25,33,41,49,57];
+            const hFileSquares = [8,16,24,32,40,48,56,64];
+            if(aFileSquares.includes(posInNum) || hFileSquares.includes(posInNum)) return true;
+            return false;
+
+        }
+        if(this.props.piece[0] === 'P'){
+            for(let i = this.props.id + 8; i <= this.props.id + 16; i+=8){
+                makeNumRed(i);
+                if(positionSquareToNum.get(this.state.position) > 16) break;
+            }
+        }
+        if(this.props.piece[0] === 'R'){
+            let [i, j] = [this.props.id, this.props.id];
+            while(i <= 64){
+                i+=8
+                j++;
+                makeNumRed(i);
+                makeNumRed(j);
+                makeNumRed(j, true);
+            }
+        if(this.props.piece[0] === 'B'){
+            console.log('this.props.piece')
+            for(let i = positionSquareToNum.get(this.state.position) + 8, j = 1; i <= 64; i+=8,j++){
+                let borders = [];
+                makeNumRed(i);
+                if(isEndFile(i-j)){
+                    borders[0] = i-j;
+                } 
+                if(isEndFile(i+j)){
+                    borders[i+j] = i+j;
+                }
+                if(borders[0] && i-j < borders[0]) makeNumRed(i-j);
+                if(borders[1] && i+j < borders[1]) makeNumRed(i+j);
+            }
+
+        }
+            
+        
+    }
+        if(this.props.piece[0] === 'Q'){
+            let left = null;
+            let right = null;
+            for(let i = positionSquareToNum.get(this.state.position) + 8, j = 1; i <= 64; i+=8,j++){
+                makeNumRed(i);
+                if(isEndFile(i-j) && left === null){
+                    left = i-j;
+                } 
+                if(isEndFile(i+j) && right === null){
+                    right = i+j;
+                }
+                if(!(left && i-j > left)) {
+                    console.log("left if : ", i-j)
+                    makeNumRed(i-j)
+                };
+                if(!(right && i+j > right)) {
+                    console.log("right if : ", i+j)
+                    makeNumRed(i+j)
+                };
+                console.log('end : ', left,right)
+            }
+        }
+        this.props.highlightHandle(highlighted)
     }
     render(){
         let content = '';
         let thePiece;
-        let pos = positionNumToSquare.get(this.props.id);
         let rendredColor = this.state.color;
         this.props.highlighted ? rendredColor = "red": rendredColor = this.state.color;
 
@@ -184,7 +254,7 @@ class BoardSquare extends react.Component {
             content = <img src = {require(`./chess-pieces/${thePiece}.png`)} alt = 'chess-piece' />
         }
         return (
-            <div onClick = {()=>{this.props.highlightHandle([this.props.id])}} 
+            <div onClick = {this.clickHandler} 
                 id = {`${this.props.id}`} 
                 className = {`board-square ${rendredColor}`}>
                     {content} 
@@ -192,3 +262,8 @@ class BoardSquare extends react.Component {
         )
     }
 }
+
+
+
+
+
