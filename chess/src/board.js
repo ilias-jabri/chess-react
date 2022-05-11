@@ -170,10 +170,12 @@ class BoardSquare extends react.Component {
     }
     clickHandler = () => {
         const highlighted = [];
+        let positionHolder = this.props.id;
 
         let makeNumRed = (num, isDecrement = false) => {
             if(isDecrement){
-                highlighted.push(num-1);    
+                highlighted.push(positionHolder - 8); 
+                positionHolder-=8;   
                 return;
             }
             highlighted.push(num)
@@ -217,8 +219,8 @@ class BoardSquare extends react.Component {
                 if(isEndFile(l, true, false)){
                     left = l
                 }
+                makeNumRed(i, true);
                 makeNumRed(i);
-                console.log(this.props.id)
                 if(!(right && r > right) && !isEndFile(this.props.id, false, true)){
                     makeNumRed(r);
                 }
