@@ -214,7 +214,8 @@ class BoardSquare extends react.Component {
                     right = j
                 }
                 makeNumRed(i);
-                if(!(right && j > right)){
+                console.log(this.props.id)
+                if(!(right && j > right) && !isEndFile(this.props.id, false, true)){
                     makeNumRed(j);
                 }
             }
