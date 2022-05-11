@@ -200,25 +200,29 @@ class BoardSquare extends react.Component {
                 makeNumRed(j);
                 makeNumRed(j, true);
             }
+        }
         if(this.props.piece[0] === 'B'){
-            console.log('this.props.piece')
+            let left = null;
+            let right = null;
             for(let i = positionSquareToNum.get(this.state.position) + 8, j = 1; i <= 64; i+=8,j++){
-                let borders = [];
-                makeNumRed(i);
-                if(isEndFile(i-j)){
-                    borders[0] = i-j;
+                if(isEndFile(i-j) && left === null){
+                    left = i-j;
                 } 
-                if(isEndFile(i+j)){
-                    borders[i+j] = i+j;
+                if(isEndFile(i+j) && right === null){
+                    right = i+j;
                 }
-                if(borders[0] && i-j < borders[0]) makeNumRed(i-j);
-                if(borders[1] && i+j < borders[1]) makeNumRed(i+j);
+                if(!(left && i-j > left)) {
+                    console.log("left if : ", i-j)
+                    makeNumRed(i-j)
+                };
+                if(!(right && i+j > right)) {
+                    console.log("right if : ", i+j)
+                    makeNumRed(i+j)
+                };
             }
 
         }
             
-        
-    }
         if(this.props.piece[0] === 'Q'){
             let left = null;
             let right = null;
@@ -238,7 +242,6 @@ class BoardSquare extends react.Component {
                     console.log("right if : ", i+j)
                     makeNumRed(i+j)
                 };
-                console.log('end : ', left,right)
             }
         }
         this.props.highlightHandle(highlighted)
