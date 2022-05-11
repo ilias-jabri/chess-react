@@ -206,17 +206,25 @@ class BoardSquare extends react.Component {
         }
         let rookMouvement = (position) => {
             let left, right;
-            let [i, j] = [position, position];
+            let [i, l, r] = [position, position, position];
             while(i <= 64){
                 i+=8
-                j++;
-                if(isEndFile(j, false, true)){
-                    right = j
+                r++;
+                l--;
+                if(isEndFile(r, false, true)){
+                    right = r
+                }
+                if(isEndFile(l, true, false)){
+                    left = l
                 }
                 makeNumRed(i);
                 console.log(this.props.id)
-                if(!(right && j > right) && !isEndFile(this.props.id, false, true)){
-                    makeNumRed(j);
+                if(!(right && r > right) && !isEndFile(this.props.id, false, true)){
+                    makeNumRed(r);
+                }
+                if(!(left && l < left) && !isEndFile(this.props.id, true, false)){
+                    makeNumRed(l);
+                    console.log("this is left: ", left);
                 }
             }
         }
