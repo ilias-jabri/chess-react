@@ -178,71 +178,73 @@ class BoardSquare extends react.Component {
             }
             highlighted.push(num)
         }
-        let isEndFile = (posInNum) => {
+        let pownMouvement = (position)=>{
+            for(let i = position + 8; i <= position + 16; i+=8){
+                makeNumRed(i);
+                if(positionSquareToNum.get(this.state.position) > 16) break;
+            }
+        }
+        let bishopMouvement = (position)=>{
+            let left = null;
+            let right = null;
+            for(let i = position + 8, j = 1; i <= 64; i+=8,j++){
+                if(isEndFile(i-j) && left === null){
+                    left = i-j;
+                } 
+                if(isEndFile(i+j) && right === null){
+                    right = i+j;
+                }
+                if(!(left && i-j > left)) {
+                    console.log("left if : ", i-j)
+                    makeNumRed(i-j)
+                };
+                if(!(right && i+j > right)) {
+                    console.log("right if : ", i+j)
+                    makeNumRed(i+j)
+                };
+            }
+        }
+        let rookMouvement = (position) => {
+            let left, right;
+            let [i, j] = [position, position];
+            while(i <= 64){
+                i+=8
+                j++;
+                if(isEndFile(j, false, true)){
+                    right = j
+                }
+                makeNumRed(i);
+                if(!(right && j > right)){
+                    makeNumRed(j);
+                }
+            }
+        }
+        let isEndFile = (posInNum, left, right) => {
             const aFileSquares = [1,9,17,25,33,41,49,57];
             const hFileSquares = [8,16,24,32,40,48,56,64];
+            if(left && !right){
+                return aFileSquares.includes(posInNum);
+            }
+            if(!left && right){
+                return hFileSquares.includes(posInNum);
+            }
             if(aFileSquares.includes(posInNum) || hFileSquares.includes(posInNum)) return true;
             return false;
 
         }
         if(this.props.piece[0] === 'P'){
-            for(let i = this.props.id + 8; i <= this.props.id + 16; i+=8){
-                makeNumRed(i);
-                if(positionSquareToNum.get(this.state.position) > 16) break;
-            }
+            pownMouvement(this.props.id);
         }
         if(this.props.piece[0] === 'R'){
-            let [i, j] = [this.props.id, this.props.id];
-            while(i <= 64){
-                i+=8
-                j++;
-                makeNumRed(i);
-                makeNumRed(j);
-                makeNumRed(j, true);
-            }
+            rookMouvement(this.props.id)
         }
         if(this.props.piece[0] === 'B'){
-            let left = null;
-            let right = null;
-            for(let i = positionSquareToNum.get(this.state.position) + 8, j = 1; i <= 64; i+=8,j++){
-                if(isEndFile(i-j) && left === null){
-                    left = i-j;
-                } 
-                if(isEndFile(i+j) && right === null){
-                    right = i+j;
-                }
-                if(!(left && i-j > left)) {
-                    console.log("left if : ", i-j)
-                    makeNumRed(i-j)
-                };
-                if(!(right && i+j > right)) {
-                    console.log("right if : ", i+j)
-                    makeNumRed(i+j)
-                };
-            }
-
+            bishopMouvement(this.props.id)
         }
             
         if(this.props.piece[0] === 'Q'){
-            let left = null;
-            let right = null;
-            for(let i = positionSquareToNum.get(this.state.position) + 8, j = 1; i <= 64; i+=8,j++){
-                makeNumRed(i);
-                if(isEndFile(i-j) && left === null){
-                    left = i-j;
-                } 
-                if(isEndFile(i+j) && right === null){
-                    right = i+j;
-                }
-                if(!(left && i-j > left)) {
-                    console.log("left if : ", i-j)
-                    makeNumRed(i-j)
-                };
-                if(!(right && i+j > right)) {
-                    console.log("right if : ", i+j)
-                    makeNumRed(i+j)
-                };
-            }
+            rookMouvement(this.props.id);
+            bishopMouvement(this.props.id);
         }
         this.props.highlightHandle(highlighted)
     }
