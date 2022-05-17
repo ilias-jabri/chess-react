@@ -189,7 +189,7 @@ class BoardSquare extends react.Component {
         let bishopMouvement = (position)=>{
             let left = null;
             let right = null;
-            for(let i = position + 8, j = 1; i <= 64; i+=8,j++){
+            for(let i = position + 8, j = 1; i <= 64; i+=8, j++){
                 if(isEndFile(i-j) && left === null){
                     left = i-j;
                 } 
@@ -197,11 +197,10 @@ class BoardSquare extends react.Component {
                     right = i+j;
                 }
                 if(!(left && i-j > left)) {
-                    console.log("left if : ", i-j)
                     makeNumRed(i-j)
+                    console.log('hello world', i,j)
                 };
                 if(!(right && i+j > right)) {
-                    console.log("right if : ", i+j)
                     makeNumRed(i+j)
                     makeNumRed(i+j)
 
