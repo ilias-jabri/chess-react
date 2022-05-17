@@ -68,8 +68,6 @@ export class Board extends react.Component {
         const squares = [];
         const position = new Map (setPosition(this.state.position));
         let coloredSquares = this.state.highlightedMoves;
-        console.log("colored squares: " , coloredSquares)
-        console.log(coloredSquares.includes(5));
         let switcher = false;
         let squaresCounter = 65;
         for(let i = 1; i<=8; i++){
@@ -102,7 +100,6 @@ export class Board extends react.Component {
             switcher === true ? switcher = false: switcher = true;
         }
         Board.setCount();
-        console.log("rendred times", Board.count);
         return squares;
     }
     static setCount (){
@@ -189,7 +186,8 @@ class BoardSquare extends react.Component {
         let bishopMouvement = (position)=>{
             let left = null;
             let right = null;
-            for(let i = position + 8, j = 1; i <= 64; i+=8, j++){
+            for(let i = position + 8 , m = position - 8, j = 1; i <= 64 ; i+=8, m-=8, j++){
+                console.log(left, right , 'this are left hhhhhhhhhhhhhhhh')
                 if(isEndFile(i-j) && left === null){
                     left = i-j;
                 } 
@@ -197,15 +195,14 @@ class BoardSquare extends react.Component {
                     right = i+j;
                 }
                 if(!(left && i-j > left)) {
-                    makeNumRed(i-j)
-                    console.log('hello world', i,j)
+                makeNumRed(i-j);
+                if(m >= 0) makeNumRed(m-j);
                 };
                 if(!(right && i+j > right)) {
-                    makeNumRed(i+j)
-                    makeNumRed(i+j)
-
-                };
-            }
+                makeNumRed(i+j)
+                if(m >= 0) makeNumRed(m+j);
+                }
+            };
         }
         let rookMouvement = (position) => {
             let left, right;
@@ -227,7 +224,6 @@ class BoardSquare extends react.Component {
                 }
                 if(!(left && l < left) && !isEndFile(this.props.id, true, false)){
                     makeNumRed(l);
-                    console.log("this is left: ", left);
                 }
             }
         }
