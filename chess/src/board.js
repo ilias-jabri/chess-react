@@ -206,9 +206,6 @@ class BoardSquare extends react.Component {
                     makeNumRed(i+j)
 
                 };
-                if(isEndFile(i+j) && right === null){
-                    right = i+j;
-                }
             }
         }
         let rookMouvement = (position) => {
